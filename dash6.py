@@ -148,12 +148,24 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Sidebar - Filtros
+# Sidebar - Filtros interactividad
+st.sidebar.header("🎛️ Filtros Interactivos")
+
 years = sorted(df['Year'].unique())
 genres = df['Genre'].unique()
 sel_years = st.sidebar.multiselect("Años de Análisis:", years, default=years)
-sel_genres = st.sidebar.multiselect("Géneros: ", genres, default=genres)
-filtered_df = df[df['Year'].isin(sel_years) & df['Genre'].isin(sel_genres)]
+sel_genres = st.sidebar.multiselect("Géneros:", genres, default=genres)
+min_reviews = st.sidebar.slider("Mínimo de Reviews:", min_value=0, max_value=int(df['Reviews'].max()), value=0, step=500)
+price_range = st.sidebar.slider("Rango de Precio ($):", int(df['Price'].min()), int(df['Price'].max()), (int(df['Price'].min()), int(df['Price'].max())))
+
+filtered_df = df[
+    (df['Year'].isin(sel_years)) &
+    (df['Genre'].isin(sel_genres)) &
+    (df['Reviews'] >= min_reviews) &
+    (df['Price'] >= price_range[0]) &
+    (df['Price'] <= price_range[1])
+]
+
 
 # -----------------------------------------------------------------------------
 # MÉTRICAS GENERALES
